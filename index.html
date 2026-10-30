@@ -207,7 +207,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
 .hud .read { display: flex; gap: 22px; color: var(--muted); font-variant-numeric: tabular-nums; flex-shrink: 0; }
 .hud .read b { color: var(--fg); font-weight: 500; }
 .hud .read span { white-space: nowrap; }
-@media (max-width: 640px) { .hud .dist { display: none; } .bar nav a.opt { display: none; } .side.right { align-self: flex-start; } }
+@media (max-width: 640px) { .hud .dist { display: none; } .bar nav a.opt { display: none; } .side.right { align-self: flex-start; } .name { font-size: clamp(3.4rem, 18vw, 5.5rem); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
@@ -444,7 +444,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
   var D = { z: 6, v: 0, p: 0, L: 520 };
   var hbar = document.getElementById('hbar'), dloc = document.getElementById('dloc'), spd = document.getElementById('spd'), dist = document.getElementById('dist');
   var secs = [].slice.call(document.querySelectorAll('[data-d]'));
-  var names = ['Departure', 'District 01 / 05 / Home base', 'District 02 / 05 / Live projects', 'District 03 / 05 / Toolbox', 'District 04 / 05 / Ask the GPS', 'District 05 / 05 / The route so far', 'Arrival'];
+  var names = ['Departure', '01 / Home base', '02 / Live projects', '03 / Toolbox', '04 / Ask the GPS', '05 / The route', 'Arrival'];
   var tl = document.getElementById('tl'), tlItems = tl.querySelectorAll('li'), lastIdx = -1;
   function maxScroll() { return Math.max(1, document.documentElement.scrollHeight - window.innerHeight); }
   function onScroll() {
@@ -473,7 +473,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
   var cv = document.getElementById('gl');
   try {
     var renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
-    var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    var dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 700 ? 1.5 : 1.75);
     renderer.setPixelRatio(dpr); renderer.setClearColor(0x0B0908, 1);
     var scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x0B0908, 0.03);
     var camera = new THREE.PerspectiveCamera(58, 1, 0.1, 300);
@@ -490,6 +490,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
     g.globalAlpha = 1;
     var tex = new THREE.CanvasTexture(tc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
 
+    var M = { pos: [], uv: [], col: [], idx: [] };
     function building(x, z, w, h, d, bright) {
       var geo = new THREE.BoxGeometry(w, h, d), uv = geo.attributes.uv, ou = rnd(), ov = rnd();
       for (var f = 0; f < 6; f++) {
@@ -500,8 +501,10 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
           else uv.setXY(i, uv.getX(i) * su / 4 + ou, uv.getY(i) * h / 4 + ov);
         }
       }
-      var m = new THREE.MeshBasicMaterial({ map: tex, color: new THREE.Color(bright, bright * 0.95, bright * 0.9) });
-      var mesh = new THREE.Mesh(geo, m); mesh.position.set(x, h / 2, z); scene.add(mesh);
+      var pos = geo.attributes.position, ia = geo.index.array, base = M.pos.length / 3;
+      for (var q = 0; q < pos.count; q++) { M.pos.push(pos.getX(q) + x, pos.getY(q) + h / 2, pos.getZ(q) + z); M.uv.push(uv.getX(q), uv.getY(q)); M.col.push(bright, bright * 0.95, bright * 0.9); }
+      for (var q2 = 0; q2 < ia.length; q2++) M.idx.push(ia[q2] + base);
+      geo.dispose();
     }
     var z = 8;
     while (z > -L - 20) {
@@ -520,6 +523,13 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
       for (var s2 = -1; s2 <= 1; s2 += 2) building(s2 * (20 + rnd() * 10), z - d2 / 2, 8 + rnd() * 6, 20 + rnd() * 36, d2, 0.3 + rnd() * 0.2);
       z -= d2 + 4 + rnd() * 8;
     }
+
+    var bg = new THREE.BufferGeometry();
+    bg.setAttribute('position', new THREE.Float32BufferAttribute(M.pos, 3));
+    bg.setAttribute('uv', new THREE.Float32BufferAttribute(M.uv, 2));
+    bg.setAttribute('color', new THREE.Float32BufferAttribute(M.col, 3));
+    bg.setIndex(M.idx);
+    scene.add(new THREE.Mesh(bg, new THREE.MeshBasicMaterial({ map: tex, vertexColors: true })));
 
     function flat(w, len, color, x, y, zc) {
       var m = new THREE.Mesh(new THREE.PlaneGeometry(w, len), new THREE.MeshBasicMaterial({ color: color }));
