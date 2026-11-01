@@ -4,6 +4,7 @@ Scroll-driven 3D night drive through a data city. Built with HTML, CSS, JavaScri
 
 ## Files
 - `index.html` the whole portfolio (styles and scripts included)
+- `photo.jpg` your portrait used in the about section
 - `favicon.svg` tab icon
 - `404.html` page shown for wrong links
 - `.nojekyll` tells GitHub Pages to serve the files as they are

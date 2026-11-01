@@ -113,6 +113,18 @@ a { color: inherit; }
 .stat b { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1; }
 .stat span { color: var(--muted); font-size: 0.88rem; }
 
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(22px, 4vw, 44px); align-items: center; max-width: 940px; padding: clamp(18px, 3.5vw, 32px); }
+.photo { margin: 0; position: relative; isolation: isolate; }
+.photo::before { content: ""; position: absolute; inset: -9px; border-radius: 22px; background: var(--grad); opacity: 0.9; z-index: -1; transform: rotate(-3deg); transition: transform 0.4s ease; }
+.photo::after { content: ""; position: absolute; inset: 0; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255, 226, 190, 0.25); pointer-events: none; }
+.about:hover .photo::before { transform: rotate(2deg); }
+.photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 16px; background: #1a130e; }
+.photo figcaption { position: absolute; left: 12px; bottom: 12px; padding: 5px 12px; border-radius: 999px; background: rgba(11, 9, 8, 0.78); border: 1px solid var(--line); color: var(--gold); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.abt { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.abt p { margin: 0; color: #E4DACC; }
+@media (max-width: 700px) { .about { grid-template-columns: minmax(0, 1fr); } .photo { width: min(100%, 280px); margin-left: 9px; } }
+
 /* billboards */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
 .card { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px; padding: 22px; text-decoration: none; min-width: 0; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.25s ease-out, border-color 0.25s; }
@@ -200,6 +212,16 @@ a { color: inherit; }
 .links a:hover { background: rgba(255, 226, 190, 0.08); border-color: var(--fg); }
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: var(--muted); padding-top: 40px; }
 
+/* sound button */
+.snd { position: fixed; z-index: 95; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(66px + env(safe-area-inset-bottom, 0px)); width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; padding: 0; cursor: pointer; color: var(--gold); background: rgba(11, 9, 8, 0.72); border: 1.5px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s; }
+.snd:hover { transform: translateY(-3px); border-color: var(--accent); }
+.snd[aria-pressed="true"] { background: var(--grad); color: #0B0908; border-color: transparent; }
+.snd[aria-pressed="true"] .slash, .snd[aria-pressed="false"] .waves { display: none; }
+.snd::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 2px solid var(--accent); animation: ping 2s ease-out infinite; pointer-events: none; }
+.snd.used::after { display: none; }
+@keyframes ping { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.7); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .snd::after { display: none; } }
+
 /* HUD */
 .hud { position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(to top, rgba(11, 9, 8, 0.94), rgba(11, 9, 8, 0.6)); border-top: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .hud .track { position: absolute; left: 0; top: -1px; width: 100%; height: 2px; background: var(--grad); transform-origin: left; transform: scaleX(var(--s, 0)); box-shadow: 0 0 12px var(--accent); }
@@ -246,14 +268,20 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
 
   <section class="district" id="about" data-d>
     <div class="dlabel"><b>01</b><span>Home base</span></div>
-    <div class="side panel">
-      <h2>Who is <em>behind</em> the wheel</h2>
-      <p>I'm Rupali, a data scientist and analytics professional from Indore. I'm doing my MCA at Acropolis Institute of Technology and Research and hold 2nd rank in my class after semester 1.</p>
-      <p>I turn messy data into clear answers, then ship them as live apps you can open in a browser.</p>
-      <div class="stats">
-        <div class="stat"><b class="grad">3</b><span>live projects</span></div>
-        <div class="stat"><b class="grad">3</b><span>certificates</span></div>
-        <div class="stat"><b class="grad">8.20</b><span>CGPA, MCA sem 1</span></div>
+    <div class="about panel">
+      <figure class="photo">
+        <img src="photo.jpg" width="640" height="800" alt="Portrait of Rupali Jat in a navy blazer" decoding="async">
+        <figcaption>Indore, India</figcaption>
+      </figure>
+      <div class="abt">
+        <h2>Who is <em>behind</em> the wheel</h2>
+        <p>I'm Rupali, a data scientist and analytics professional from Indore. I'm doing my MCA at Acropolis Institute of Technology and Research and hold 2nd rank in my class after semester 1.</p>
+        <p>I'm a quick learner who enjoys solving problems. I turn messy data into clear answers, then ship them as live apps you can open in a browser. My goal is to start my career at a reputed organization and keep growing my skills.</p>
+        <div class="stats">
+          <div class="stat"><b class="grad">3</b><span>live projects</span></div>
+          <div class="stat"><b class="grad">3</b><span>certificates</span></div>
+          <div class="stat"><b class="grad">8.20</b><span>CGPA, MCA sem 1</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -364,6 +392,9 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
   </section>
 </div>
 
+<button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Turn sound on" title="Sound">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="slash" d="M17 9l5 6M22 9l-5 6"/></svg>
+</button>
 <div class="hud mono" role="status">
   <div class="track" id="hbar"></div>
   <div class="loc" id="dloc">Departure</div>
@@ -440,8 +471,58 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
     })();
   });
 
+  /* sound: engine hum that follows speed, plus a chime at each district */
+  var audio = { on: false, ctx: null };
+  var snd = document.getElementById('snd');
+  audio.start = function () {
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    var c = new AC(); audio.ctx = c;
+    var master = c.createGain(); master.gain.value = 0; master.connect(c.destination); audio.master = master;
+    var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220; lp.connect(master); audio.lp = lp;
+    var g1 = c.createGain(); g1.gain.value = 0.5; g1.connect(lp);
+    var o1 = c.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = 48; o1.connect(g1); o1.start();
+    var g2 = c.createGain(); g2.gain.value = 0.18; g2.connect(lp);
+    var o2 = c.createOscillator(); o2.type = 'square'; o2.frequency.value = 72; o2.connect(g2); o2.start();
+    audio.o1 = o1; audio.o2 = o2;
+    var buf = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    var ns = c.createBufferSource(); ns.buffer = buf; ns.loop = true;
+    var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 700; bp.Q.value = 0.6;
+    var wg = c.createGain(); wg.gain.value = 0; ns.connect(bp); bp.connect(wg); wg.connect(master); ns.start();
+    audio.wind = wg; audio.bp = bp;
+    return true;
+  };
+  audio.update = function () {
+    var c = audio.ctx, t = c.currentTime, k = D.kmh / 260;
+    audio.o1.frequency.setTargetAtTime(46 + k * 70, t, 0.12);
+    audio.o2.frequency.setTargetAtTime(70 + k * 105, t, 0.12);
+    audio.lp.frequency.setTargetAtTime(200 + k * 700, t, 0.15);
+    audio.wind.gain.setTargetAtTime(k * 0.22, t, 0.2);
+    audio.bp.frequency.setTargetAtTime(500 + k * 1500, t, 0.2);
+  };
+  audio.chime = function () {
+    var c = audio.ctx, t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(660, t); o.frequency.setValueAtTime(990, t + 0.09);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.45);
+  };
+  snd.addEventListener('click', function () {
+    snd.classList.add('used');
+    try {
+      if (!audio.on) {
+        if (!audio.ctx && !audio.start()) return;
+        if (audio.ctx.state === 'suspended') audio.ctx.resume();
+        audio.on = true; audio.master.gain.setTargetAtTime(0.16, audio.ctx.currentTime, 0.2); audio.chime();
+      } else {
+        audio.on = false; audio.master.gain.setTargetAtTime(0, audio.ctx.currentTime, 0.1);
+      }
+      snd.setAttribute('aria-pressed', audio.on ? 'true' : 'false');
+      snd.setAttribute('aria-label', audio.on ? 'Turn sound off' : 'Turn sound on');
+    } catch (e) {}
+  });
+
   /* drive state: camera position follows scroll, HUD reads it */
-  var D = { z: 6, v: 0, p: 0, L: 520 };
+  var D = { z: 6, v: 0, p: 0, L: 520, kmh: 0 };
   var hbar = document.getElementById('hbar'), dloc = document.getElementById('dloc'), spd = document.getElementById('spd'), dist = document.getElementById('dist');
   var secs = [].slice.call(document.querySelectorAll('[data-d]'));
   var names = ['Departure', '01 / Home base', '02 / Live projects', '03 / Toolbox', '04 / Ask the GPS', '05 / The route', 'Arrival'];
@@ -450,7 +531,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
   function onScroll() {
     var line = window.innerHeight * 0.55, idx = 0;
     secs.forEach(function (s, i) { if (s.getBoundingClientRect().top < line) idx = i; });
-    if (idx !== lastIdx) { lastIdx = idx; dloc.textContent = names[idx]; }
+    if (idx !== lastIdx) { lastIdx = idx; dloc.textContent = names[idx]; if (audio.on) { try { audio.chime(); } catch (e) {} } }
     var b = tl.getBoundingClientRect(), tline = window.innerHeight * 0.62;
     tl.style.setProperty('--p', Math.max(0, Math.min((tline - b.top) / b.height, 1)));
     tlItems.forEach(function (li) { li.classList.toggle('on', li.getBoundingClientRect().top + 30 < tline); });
@@ -464,7 +545,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
     var target = 6 - p * (D.L - 40), nz = D.z + (target - D.z) * (reduce ? 1 : 0.07);
     D.v = nz - D.z; D.z = nz;
     hbar.style.setProperty('--s', p);
-    spd.textContent = String(Math.min(260, Math.round(Math.abs(D.v) * 60 * 3.6))).padStart(3, '0');
+    D.kmh = Math.min(260, Math.round(Math.abs(D.v) * 60 * 3.6)); spd.textContent = String(D.kmh).padStart(3, '0'); if (audio.on) { try { audio.update(); } catch (e) {} }
     dist.textContent = String(Math.max(0, Math.round(6 - D.z))).padStart(4, '0');
     requestAnimationFrame(drive);
   })();
@@ -570,6 +651,57 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10
     for (var mi = 0; mi < 1000; mi++) { motes[mi * 3] = (rnd() - 0.5) * 30; motes[mi * 3 + 1] = rnd() * 14; motes[mi * 3 + 2] = 10 - rnd() * (L + 30); }
     glow(motes, 3.2, 0xFFD08A, 0.35);
     glow(new Float32Array([0, 6, -L + 10]), 900, 0xFF6A3D, 0);
+
+    var signs = [], signsBuilt = false;
+    function rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+    function makeSign(title, sub) {
+      var c = document.createElement('canvas'); c.width = 1024; c.height = 288;
+      var x = c.getContext('2d');
+      x.fillStyle = 'rgba(14, 10, 8, 0.94)'; rr(x, 8, 8, 1008, 272, 34); x.fill();
+      var gr = x.createLinearGradient(0, 0, 1024, 0); gr.addColorStop(0, '#FFD08A'); gr.addColorStop(0.55, '#FF9A3C'); gr.addColorStop(1, '#FF6A3D');
+      x.lineWidth = 8; x.strokeStyle = gr; rr(x, 8, 8, 1008, 272, 34); x.stroke();
+      x.lineWidth = 2; x.strokeStyle = 'rgba(255, 226, 190, 0.35)'; rr(x, 26, 26, 972, 236, 22); x.stroke();
+      var size = 104; x.textAlign = 'center'; x.textBaseline = 'middle';
+      do { x.font = '800 ' + size + 'px Syne, "Arial Black", sans-serif'; size -= 4; } while (x.measureText(title).width > 880 && size > 40);
+      x.shadowColor = 'rgba(255, 154, 60, 0.9)'; x.shadowBlur = 24; x.fillStyle = '#FFE2B0';
+      x.fillText(title, 512, 118); x.shadowBlur = 0;
+      x.font = '500 38px "JetBrains Mono", monospace'; x.fillStyle = '#FF9A3C'; x.fillText(sub, 512, 214);
+      var t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t;
+    }
+    var signDefs = [
+      { sec: 'top', off: -34, t: 'WELCOME', s: 'TO THE DATA CITY' },
+      { sec: 'projects', off: -22, t: 'SALES AI ANALYTICS', s: 'PYTHON / STREAMLIT / PANDAS' },
+      { sec: 'projects', off: -56, t: 'AI INTERVIEW PREP BOT', s: 'FLASK / SQLITE / AI' },
+      { sec: 'projects', off: -90, t: 'EXPENSE TRACKER', s: 'WEB APP / GITHUB PAGES' },
+      { sec: 'gps', off: -24, t: 'NEED DIRECTIONS?', s: 'ASK THE GPS' },
+      { sec: 'contact', off: -24, t: 'YOU HAVE ARRIVED', s: "LET'S TALK" }
+    ];
+    function placeSigns() {
+      var mx = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      signs.forEach(function (s) {
+        var el = s.d.sec === 'top' ? null : document.getElementById(s.d.sec);
+        var sy = el ? el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.35 : 0;
+        s.g.position.z = 6 - Math.min(Math.max(sy / mx, 0), 1) * (L - 40) + s.d.off;
+      });
+    }
+    function buildSigns() {
+      if (signsBuilt) return; signsBuilt = true;
+      var postMat = new THREE.MeshBasicMaterial({ color: 0x2A211A });
+      signDefs.forEach(function (d) {
+        var g = new THREE.Group();
+        var plate = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.81), new THREE.MeshBasicMaterial({ map: makeSign(d.t, d.s), transparent: true }));
+        plate.position.y = 7.2; g.add(plate);
+        [-5.1, 5.1].forEach(function (px) { var p = new THREE.Mesh(new THREE.BoxGeometry(0.22, 8.6, 0.22), postMat); p.position.set(px, 4.3, 0); g.add(p); });
+        scene.add(g); signs.push({ g: g, d: d });
+      });
+      placeSigns();
+    }
+    var fontsReady = [];
+    try { fontsReady = [document.fonts.load('800 40px Syne'), document.fonts.load('500 20px "JetBrains Mono"')]; } catch (e) {}
+    Promise.all(fontsReady).catch(function () {}).then(buildSigns);
+    setTimeout(buildSigns, 2500);
+    window.addEventListener('resize', placeSigns);
+    if (window.ResizeObserver) new ResizeObserver(placeSigns).observe(document.body);
 
     var mouse = { x: 0, y: 0 };
     window.addEventListener('pointermove', function (e) { mouse.x = e.clientX / window.innerWidth * 2 - 1; mouse.y = e.clientY / window.innerHeight * 2 - 1; });
